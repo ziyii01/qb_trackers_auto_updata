@@ -2,6 +2,8 @@
 
 ## 使用方法
 
+开发环境: `python3.10.11` `windows11 23H2` `vscode`
+
 1. 先 `pip install -r requirement.txt`
 2. 然后修改 `config.py` 中的配置
 3. 然后运行 `main.py` 即可。
