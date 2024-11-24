@@ -1,6 +1,7 @@
 from httpx import AsyncClient, Response
 
 from const import URL_ROOT
+from loguru import logger as log
 
 
 class Torrent:
@@ -157,12 +158,34 @@ class Application:
 
 class Torrent_management:
     @staticmethod
-    async def info(client: AsyncClient) -> list[Torrent]:
+    async def info(client: AsyncClient, filter: None | str = None) -> list[Torrent]:
         """Qb 获取种子信息接口 返回实例化后的种子列表"""
+        _data = {}
+        if filter is not None:
+            if filter in [
+                "all",
+                "downloading",
+                "seeding",
+                "completed",
+                "paused",
+                "active",
+                "inactive",
+                "resumed",
+                "stalled",
+                "stalled_uploading",
+                "stalled_downloading",
+                "errored",
+            ]:
+                _data["filter"] = filter
+            else:
+                raise ValueError(
+                    "filter 参数错误 允许的参数为 all, downloading, seeding, completed, paused, active, inactive, resumed, stalled, stalled_uploading, stalled_downloading, errored"
+                )
+        log.debug(f"获取种子信息接口参数: {_data}")
         _torrent_list: list[Torrent] = []
         _response: Response = await post_data(
             client=client,
-            data={},
+            data=_data,
             api="/api/v2/torrents/info",
         )
         for _i in _response.json():
